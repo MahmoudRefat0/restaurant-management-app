@@ -1,0 +1,90 @@
+<h2>Orders</h2>
+
+@if (error) {
+  <div class="alert">{{ error }}</div>
+}
+
+<div class="card">
+  <h3>New Order</h3>
+  <div class="row">
+    <select name="table" [(ngModel)]="selectedTableId">
+      <option [ngValue]="0" disabled>Choose table</option>
+      @for (table of tables; track table.id) {
+        <option [ngValue]="table.id">Table {{ table.number }} ({{ table.capacity }} seats)</option>
+      }
+    </select>
+
+    <select name="menuItem" [(ngModel)]="selectedMenuItemId">
+      <option [ngValue]="0" disabled>Choose item</option>
+      @for (item of menuItems; track item.id) {
+        <option [ngValue]="item.id">{{ item.name }} - {{ item.price | number: '1.2-2' }}</option>
+      }
+    </select>
+
+    <input name="quantity" type="number" min="1" class="small-input" [(ngModel)]="quantity">
+    <button type="button" (click)="addToCart()" [disabled]="!selectedMenuItemId">Add Item</button>
+  </div>
+
+  @if (cart.length > 0) {
+    <table>
+      <tr>
+        <th>Item</th>
+        <th>Qty</th>
+        <th>Subtotal</th>
+        <th></th>
+      </tr>
+      @for (item of cart; track item.menuItem.id) {
+        <tr>
+          <td>{{ item.menuItem.name }}</td>
+          <td>{{ item.quantity }}</td>
+          <td>{{ item.menuItem.price * item.quantity | number: '1.2-2' }}</td>
+          <td><button class="small danger" (click)="removeFromCart(item)">Remove</button></td>
+        </tr>
+      }
+    </table>
+    <p class="total">Total: {{ cartTotal | number: '1.2-2' }}</p>
+    <button (click)="createOrder()" [disabled]="!selectedTableId">Create Order</button>
+  }
+</div>
+
+<div class="card">
+  <div class="row">
+    <label for="statusFilter">Status:</label>
+    <select id="statusFilter" name="statusFilter" [(ngModel)]="statusFilter" (ngModelChange)="loadOrders()">
+      <option value="">All</option>
+      @for (status of statuses; track status) {
+        <option [value]="status">{{ status }}</option>
+      }
+    </select>
+  </div>
+
+  @for (order of orders; track order.id) {
+    <div class="order">
+      <div class="order-header">
+        <strong>#{{ order.id }} - Table {{ order.tableNumber }}</strong>
+        <span class="badge" [class]="order.status.toLowerCase()">{{ order.status }}</span>
+      </div>
+      <p class="muted">By {{ order.createdBy }} at {{ order.createdAt | date: 'short' }}</p>
+      <ul>
+        @for (item of order.items; track item.menuItemId) {
+          <li>{{ item.quantity }} x {{ item.name }} = {{ item.subtotal | number: '1.2-2' }}</li>
+        }
+      </ul>
+      <p class="total">Total: {{ order.totalAmount | number: '1.2-2' }}</p>
+
+      <div class="actions">
+        @if (nextStatus(order.status); as next) {
+          <button class="small" (click)="changeStatus(order, next)">Mark as {{ next }}</button>
+        }
+        @if (!isClosed(order.status)) {
+          <button class="small secondary" (click)="changeStatus(order, 'CANCELLED')">Cancel</button>
+        }
+        @if (auth.isAdmin()) {
+          <button class="small danger" (click)="remove(order)">Delete</button>
+        }
+      </div>
+    </div>
+  } @empty {
+    <p class="muted">No orders found.</p>
+  }
+</div>

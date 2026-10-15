@@ -1,0 +1,17 @@
+<div class="card narrow login-card">
+  <h2>Login</h2>
+
+  @if (error) {
+    <div class="alert">{{ error }}</div>
+  }
+
+  <form (ngSubmit)="login()">
+    <label for="username">Username</label>
+    <input id="username" name="username" [(ngModel)]="username" required>
+
+    <label for="password">Password</label>
+    <input id="password" name="password" type="password" [(ngModel)]="password" required>
+
+    <button type="submit" [disabled]="loading">{{ loading ? 'Logging in...' : 'Login' }}</button>
+  </form>
+</div>

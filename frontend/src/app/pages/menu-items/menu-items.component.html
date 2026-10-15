@@ -1,0 +1,76 @@
+<h2>Menu</h2>
+
+@if (error) {
+  <div class="alert">{{ error }}</div>
+}
+
+@if (auth.isAdmin()) {
+  <div class="card">
+    <h3>{{ editingId ? 'Edit Item' : 'New Item' }}</h3>
+    <form class="row" (ngSubmit)="save()">
+      <input name="name" placeholder="Name" [(ngModel)]="form.name" required>
+      <input name="description" placeholder="Description" [(ngModel)]="form.description">
+      <input name="price" type="number" min="0.01" step="0.01" placeholder="Price" [(ngModel)]="form.price" required>
+      <select name="categoryId" [(ngModel)]="form.categoryId" required>
+        <option [ngValue]="0" disabled>Choose category</option>
+        @for (category of categories; track category.id) {
+          <option [ngValue]="category.id">{{ category.name }}</option>
+        }
+      </select>
+      <label class="checkbox">
+        <input type="checkbox" name="available" [(ngModel)]="form.available"> Available
+      </label>
+      <button type="submit">{{ editingId ? 'Update' : 'Add' }}</button>
+      @if (editingId) {
+        <button type="button" class="secondary" (click)="reset()">Cancel</button>
+      }
+    </form>
+  </div>
+}
+
+<div class="card">
+  <div class="row">
+    <label for="filter">Category:</label>
+    <select id="filter" name="filter" [(ngModel)]="filterCategoryId" (ngModelChange)="load()">
+      <option [ngValue]="0">All</option>
+      @for (category of categories; track category.id) {
+        <option [ngValue]="category.id">{{ category.name }}</option>
+      }
+    </select>
+  </div>
+
+  <table>
+    <tr>
+      <th>Name</th>
+      <th>Category</th>
+      <th>Price</th>
+      <th>Status</th>
+      @if (auth.isAdmin()) {
+        <th></th>
+      }
+    </tr>
+    @for (item of menuItems; track item.id) {
+      <tr>
+        <td>
+          <strong>{{ item.name }}</strong>
+          <div class="muted">{{ item.description }}</div>
+        </td>
+        <td>{{ item.categoryName }}</td>
+        <td>{{ item.price | number: '1.2-2' }}</td>
+        <td>
+          <span class="badge" [class.green]="item.available" [class.gray]="!item.available">
+            {{ item.available ? 'Available' : 'Unavailable' }}
+          </span>
+        </td>
+        @if (auth.isAdmin()) {
+          <td class="actions">
+            <button class="small" (click)="edit(item)">Edit</button>
+            <button class="small danger" (click)="remove(item)">Delete</button>
+          </td>
+        }
+      </tr>
+    } @empty {
+      <tr><td colspan="5" class="muted">No menu items found.</td></tr>
+    }
+  </table>
+</div>

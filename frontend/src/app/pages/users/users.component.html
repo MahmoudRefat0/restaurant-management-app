@@ -1,0 +1,42 @@
+<h2>Users</h2>
+
+@if (error) {
+  <div class="alert">{{ error }}</div>
+}
+
+<div class="card">
+  <h3>New User</h3>
+  <form class="row" (ngSubmit)="save()">
+    <input name="fullName" placeholder="Full name" [(ngModel)]="form.fullName" required>
+    <input name="username" placeholder="Username" [(ngModel)]="form.username" required>
+    <input name="password" type="password" placeholder="Password (6+ chars)" [(ngModel)]="form.password" required>
+    <select name="role" [(ngModel)]="form.role">
+      <option value="STAFF">Staff</option>
+      <option value="ADMIN">Admin</option>
+    </select>
+    <button type="submit">Add User</button>
+  </form>
+</div>
+
+<div class="card">
+  <table>
+    <tr>
+      <th>Full Name</th>
+      <th>Username</th>
+      <th>Role</th>
+      <th></th>
+    </tr>
+    @for (user of users; track user.id) {
+      <tr>
+        <td>{{ user.fullName }}</td>
+        <td>{{ user.username }}</td>
+        <td>{{ user.role }}</td>
+        <td class="actions">
+          @if (user.username !== auth.currentUser?.username) {
+            <button class="small danger" (click)="remove(user)">Delete</button>
+          }
+        </td>
+      </tr>
+    }
+  </table>
+</div>

@@ -1,0 +1,39 @@
+<h2>Categories</h2>
+
+@if (error) {
+  <div class="alert">{{ error }}</div>
+}
+
+<div class="card">
+  <h3>{{ editingId ? 'Edit Category' : 'New Category' }}</h3>
+  <form class="row" (ngSubmit)="save()">
+    <input name="name" placeholder="Name" [(ngModel)]="form.name" required>
+    <input name="description" placeholder="Description" [(ngModel)]="form.description">
+    <button type="submit">{{ editingId ? 'Update' : 'Add' }}</button>
+    @if (editingId) {
+      <button type="button" class="secondary" (click)="reset()">Cancel</button>
+    }
+  </form>
+</div>
+
+<div class="card">
+  <table>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th></th>
+    </tr>
+    @for (category of categories; track category.id) {
+      <tr>
+        <td>{{ category.name }}</td>
+        <td>{{ category.description }}</td>
+        <td class="actions">
+          <button class="small" (click)="edit(category)">Edit</button>
+          <button class="small danger" (click)="remove(category)">Delete</button>
+        </td>
+      </tr>
+    } @empty {
+      <tr><td colspan="3" class="muted">No categories yet.</td></tr>
+    }
+  </table>
+</div>
