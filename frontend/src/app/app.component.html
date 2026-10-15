@@ -1,0 +1,22 @@
+@if (auth.isLoggedIn()) {
+  <header class="navbar">
+    <span class="brand">Restaurant Manager</span>
+    <nav>
+      <a routerLink="/orders" routerLinkActive="active">Orders</a>
+      <a routerLink="/menu" routerLinkActive="active">Menu</a>
+      <a routerLink="/tables" routerLinkActive="active">Tables</a>
+      @if (auth.isAdmin()) {
+        <a routerLink="/categories" routerLinkActive="active">Categories</a>
+        <a routerLink="/users" routerLinkActive="active">Users</a>
+      }
+    </nav>
+    <div class="user-box">
+      <span>{{ auth.currentUser?.fullName }} ({{ auth.currentUser?.role }})</span>
+      <button class="secondary" (click)="auth.logout()">Logout</button>
+    </div>
+  </header>
+}
+
+<main class="container">
+  <router-outlet />
+</main>
