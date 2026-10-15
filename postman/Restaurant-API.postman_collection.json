@@ -1,0 +1,235 @@
+{
+  "info": {
+    "name": "Restaurant Management API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      { "key": "token", "value": "{{token}}", "type": "string" }
+    ]
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080/api" },
+    { "key": "token", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.collectionVariables.set('token', pm.response.json().token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}" },
+            "url": "{{baseUrl}}/auth/login"
+          }
+        },
+        {
+          "name": "Me",
+          "request": { "method": "GET", "url": "{{baseUrl}}/auth/me" }
+        }
+      ]
+    },
+    {
+      "name": "Users (Admin)",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": { "method": "GET", "url": "{{baseUrl}}/users" }
+        },
+        {
+          "name": "Create Staff User",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"username\": \"ahmed\",\n  \"password\": \"staff123\",\n  \"fullName\": \"Ahmed Ali\",\n  \"role\": \"STAFF\"\n}" },
+            "url": "{{baseUrl}}/users"
+          }
+        },
+        {
+          "name": "Delete User",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}/users/2" }
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "Get All Categories",
+          "request": { "method": "GET", "url": "{{baseUrl}}/categories" }
+        },
+        {
+          "name": "Get Category By Id",
+          "request": { "method": "GET", "url": "{{baseUrl}}/categories/1" }
+        },
+        {
+          "name": "Create Category",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Main Dishes\",\n  \"description\": \"Lunch and dinner meals\"\n}" },
+            "url": "{{baseUrl}}/categories"
+          }
+        },
+        {
+          "name": "Update Category",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Main Dishes\",\n  \"description\": \"Updated description\"\n}" },
+            "url": "{{baseUrl}}/categories/1"
+          }
+        },
+        {
+          "name": "Delete Category",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}/categories/1" }
+        }
+      ]
+    },
+    {
+      "name": "Menu Items",
+      "item": [
+        {
+          "name": "Get All Menu Items",
+          "request": { "method": "GET", "url": "{{baseUrl}}/menu-items" }
+        },
+        {
+          "name": "Get Menu Items By Category",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/menu-items?categoryId=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["menu-items"],
+              "query": [{ "key": "categoryId", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Create Menu Item",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Grilled Chicken\",\n  \"description\": \"With rice and salad\",\n  \"price\": 45.50,\n  \"categoryId\": 1,\n  \"available\": true\n}" },
+            "url": "{{baseUrl}}/menu-items"
+          }
+        },
+        {
+          "name": "Update Menu Item",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Grilled Chicken\",\n  \"description\": \"With rice and salad\",\n  \"price\": 50.00,\n  \"categoryId\": 1,\n  \"available\": false\n}" },
+            "url": "{{baseUrl}}/menu-items/1"
+          }
+        },
+        {
+          "name": "Delete Menu Item",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}/menu-items/1" }
+        }
+      ]
+    },
+    {
+      "name": "Tables",
+      "item": [
+        {
+          "name": "Get All Tables",
+          "request": { "method": "GET", "url": "{{baseUrl}}/tables" }
+        },
+        {
+          "name": "Create Table",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"number\": 1,\n  \"capacity\": 4\n}" },
+            "url": "{{baseUrl}}/tables"
+          }
+        },
+        {
+          "name": "Update Table",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"number\": 1,\n  \"capacity\": 6\n}" },
+            "url": "{{baseUrl}}/tables/1"
+          }
+        },
+        {
+          "name": "Update Table Status",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"RESERVED\"\n}" },
+            "url": "{{baseUrl}}/tables/1/status"
+          }
+        },
+        {
+          "name": "Delete Table",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}/tables/1" }
+        }
+      ]
+    },
+    {
+      "name": "Orders",
+      "item": [
+        {
+          "name": "Get All Orders",
+          "request": { "method": "GET", "url": "{{baseUrl}}/orders" }
+        },
+        {
+          "name": "Get Pending Orders",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/orders?status=PENDING",
+              "host": ["{{baseUrl}}"],
+              "path": ["orders"],
+              "query": [{ "key": "status", "value": "PENDING" }]
+            }
+          }
+        },
+        {
+          "name": "Get Order By Id",
+          "request": { "method": "GET", "url": "{{baseUrl}}/orders/1" }
+        },
+        {
+          "name": "Create Order",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"tableId\": 1,\n  \"items\": [\n    { \"menuItemId\": 1, \"quantity\": 2 }\n  ]\n}" },
+            "url": "{{baseUrl}}/orders"
+          }
+        },
+        {
+          "name": "Update Order Status",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"PREPARING\"\n}" },
+            "url": "{{baseUrl}}/orders/1/status"
+          }
+        },
+        {
+          "name": "Delete Order (Admin)",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}/orders/1" }
+        }
+      ]
+    }
+  ]
+}
